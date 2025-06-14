@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../providers/AuthProvider';
 
 const Login = () => {
-    const { loginUser } = useContext(AuthContext);
+    const { loginUser, signInWithGoogle } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleLogin = e => {
         e.preventDefault();
@@ -14,11 +15,25 @@ const Login = () => {
         loginUser(email, password)
             .then(result => {
                 console.log(result.user);
+                e.target.reset();
+                navigate('/');
             })
             .catch(error => {
                 console.log('ERROR', error.message)
             })
     }
+    const handleGoogleSignIn = () => {
+        signInWithGoogle()
+            .then(result => {
+                console.log(result.user);
+                navigate('/');
+            })
+            .catch(error => {
+                console.log('ERROR', error.message)
+            })
+    }
+
+
     return (
         <div className="hero bg-base-200 min-h-screen">
             <div className="hero-content flex-col">
@@ -34,6 +49,7 @@ const Login = () => {
                             <input type="password" name='password' className="input" placeholder="Password" />
                             <div><a className="link link-hover">Forgot password?</a></div>
                             <button className="btn btn-neutral mt-4">Login</button>
+                            <button onClick={handleGoogleSignIn} className="btn btn-ghost border-black mt-4">Login with Google</button>
                         </fieldset>
                     </form>
                     <p className="mb-4 text-xl text-center">New to this website?
